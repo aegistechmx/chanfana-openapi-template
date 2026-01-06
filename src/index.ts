@@ -1,6 +1,6 @@
 import { fromHono } from "chanfana";
 import { Hono } from "hono";
-import { TaskList } from "./endpoints/tasks/router"; // Importa la clase que me acabas de mostrar
+import { TaskList } from "./endpoints/tasks/router"; 
 import { DummyEndpoint } from "./endpoints/dummyEndpoint"; 
 
 const app = new Hono();
@@ -32,13 +32,12 @@ const openapi = fromHono(app, {
     info: {
       title: "AegisTech API",
       version: "1.0.0",
-      description: "![Logo](https://aegistechmx.github.io/images/logo-aegistech-dark.png)\n\n Infraestructura Segura",
+      description: "![Logo](https://aegistechmx.github.io/images/logo-aegistech-dark.png)\n\n API de Gestión de Tareas Segura",
     },
   },
 });
 
-// --- REGISTRO DIRECTO DE CLASES ---
-// Esto evita el error de "basePath" y el Error 500
+// --- REGISTRO DIRECTO (Soluciona Error 500 / basePath) ---
 openapi.get("/tasks", TaskList);
 openapi.post("/dummy/:slug", DummyEndpoint);
 
