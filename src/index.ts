@@ -18,21 +18,24 @@ app.use("*", async (c, next) => {
   c.header("Referrer-Policy", "strict-origin-when-cross-origin");
   c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
 
-  // CSP básica para Swagger UI
+  // CSP ajustada para Swagger UI con más permisos
   c.header(
     "Content-Security-Policy",
-    "default-src 'self'; " +
-    "script-src 'self'; " +
-    "style-src 'self'; " +
-    "img-src 'self' data: https://raw.githubusercontent.com https://aegistechmx.github.io; " +
-    "frame-ancestors 'self'; " +
-    "upgrade-insecure-requests"
+    "default-src 'self' https://cdn.jsdelivr.net; " +
+    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
+    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
+    "img-src 'self' data: https://aegistechmx.github.io https://raw.githubusercontent.com; " +
+    "font-src 'self' https://cdn.jsdelivr.net; " +
+    "connect-src 'self'; " +
+    "frame-ancestors 'none'; " +
+    "base-uri 'self'; " +
+    "form-action 'self'"
   );
 
   // Cabeceras avanzadas
   c.header("Cross-Origin-Embedder-Policy", "require-corp");
   c.header("Cross-Origin-Opener-Policy", "same-origin");
-  c.header("Cross-Origin-Resource-Policy", "same-origin");
+  c.header("Cross-Origin-Resource-Policy", "cross-origin"); // Cambiado para permitir cargar imágenes externas
 });
 
 // === MANEJADOR GLOBAL DE ERRORES ===
@@ -44,7 +47,7 @@ app.onError((err, c) => {
   return c.json({ success: false, errors: [{ code: 7000, message: "Internal Server Error" }] }, 500);
 });
 
-// === SETUP OPENAPI CON LOGO DIRECTO ===
+// === SETUP OPENAPI CON LOGO ===
 const openapi = fromHono(app, {
   docs_url: "/",
   schema: {
@@ -58,6 +61,11 @@ const openapi = fromHono(app, {
         backgroundColor: "#0a0a0a"
       },
     },
+    openapi: "3.0.0",
+    tags: [
+      { name: "Tasks", description: "Operaciones con tareas" },
+      { name: "Dummy", description: "Endpoint de prueba" }
+    ]
   },
 });
 
@@ -65,5 +73,6 @@ const openapi = fromHono(app, {
 openapi.route("/tasks", tasksRouter);
 openapi.post("/dummy/:slug", DummyEndpoint);
 
-// === EXPORTAR APP ===
-export default app;
+// === EXPORTAR APP CORRECTAMENTE ===
+// Exporta el router de OpenAPI en lugar de la app Hono original
+export default openapi.router;
