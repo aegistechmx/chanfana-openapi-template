@@ -70,23 +70,23 @@ const openapi = fromHono(app, {
   },
 });
 
-// === ANIMACIÓN DE LOGO (fade-in 1 sola vez) ===
-openapi.beforeRender((html) => {
-  return html.replace(
-    /(<img[^>]+x-logo[^>]*>)/,
-    `$1
-    <style>
-      img[x-logo] {
-        opacity: 0;
-        animation: fadeIn 1s forwards;
-      }
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-    </style>`
-  );
-});
+// === ANIMACIÓN DE LOGO CON CSS ===
+// Esto se puede inyectar en tu HTML de docs (si tienes <style> global)
+const logoCSS = `
+<style>
+  img[x-logo] {
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+`;
+
+// Si tu docs tienen un middleware o HTML base, inyecta logoCSS ahí
+
 
 // === RUTAS ===
 // openapi.route("/tasks", tasksRouter);
