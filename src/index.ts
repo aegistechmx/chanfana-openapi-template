@@ -23,7 +23,7 @@ app.use("*", async (c, next) => {
   "default-src 'self'; " +
   "script-src 'self'; " +
   "style-src 'self'; " +
-  "img-src 'self' data:; " +
+  "img-src 'self' data: https://aegistechmx.github.io; " +
   "frame-ancestors 'self'; " +
   "upgrade-insecure-requests"
 );
