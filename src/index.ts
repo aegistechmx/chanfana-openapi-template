@@ -62,8 +62,8 @@ const openapi = fromHono(app, {
 });
 
 // === RUTAS ===
-// openapi.route("/tasks", tasksRouter);
-// openapi.post("/dummy/:slug", DummyEndpoint);
+openapi.route("/tasks", tasksRouter);
+openapi.post("/dummy/:slug", DummyEndpoint);
 
 // === EXPORTAR APP ===
 export default app;
