@@ -7,7 +7,6 @@ const TaskSchema = z.object({
   completed: z.boolean(),
 });
 
-// Exportamos solo la clase
 export class TaskList extends OpenAPIRoute {
   schema = {
     tags: ["Tasks"],
