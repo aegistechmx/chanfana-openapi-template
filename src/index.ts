@@ -1,78 +1,81 @@
-import { ApiException, fromHono } from "chanfana";
+import { fromHono, createEndpoint } from "chanfana";
 import { Hono } from "hono";
-import { tasksRouter } from "./endpoints/tasks/router";
-import { ContentfulStatusCode } from "hono/utils/http-status";
-import { DummyEndpoint } from "./endpoints/dummyEndpoint";
+import { z } from "zod";
 
 // Inicia la app Hono
-const app = new Hono<{ Bindings: Env }>();
+const app = new Hono();
 
-// === MIDDLEWARE DE SEGURIDAD – ANTES DE LAS RUTAS ===
+// === MIDDLEWARE DE SEGURIDAD ===
 app.use("*", async (c, next) => {
   await next();
 
-  // Cabeceras de hardening pro
+  // Cabeceras de seguridad
   c.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
   c.header("X-Frame-Options", "SAMEORIGIN");
   c.header("X-Content-Type-Options", "nosniff");
   c.header("Referrer-Policy", "strict-origin-when-cross-origin");
-  c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
-
-  // CSP ajustada para Swagger UI con más permisos
+  
+  // CSP para Swagger UI
   c.header(
     "Content-Security-Policy",
     "default-src 'self' https://cdn.jsdelivr.net; " +
     "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
-    "img-src 'self' data: https://aegistechmx.github.io https://raw.githubusercontent.com; " +
-    "font-src 'self' https://cdn.jsdelivr.net; " +
-    "connect-src 'self'; " +
-    "frame-ancestors 'none'; " +
-    "base-uri 'self'; " +
-    "form-action 'self'"
+    "img-src 'self' data: https://aegistechmx.github.io; " +
+    "font-src 'self' https://cdn.jsdelivr.net;"
   );
-
-  // Cabeceras avanzadas
-  c.header("Cross-Origin-Embedder-Policy", "require-corp");
-  c.header("Cross-Origin-Opener-Policy", "same-origin");
-  c.header("Cross-Origin-Resource-Policy", "cross-origin"); // Cambiado para permitir cargar imágenes externas
 });
 
-// === MANEJADOR GLOBAL DE ERRORES ===
-app.onError((err, c) => {
-  if (err instanceof ApiException) {
-    return c.json({ success: false, errors: err.buildResponse() }, err.status as ContentfulStatusCode);
-  }
-  console.error("Error global atrapado:", err);
-  return c.json({ success: false, errors: [{ code: 7000, message: "Internal Server Error" }] }, 500);
-});
-
-// === SETUP OPENAPI CON LOGO ===
+// === SETUP OPENAPI ===
 const openapi = fromHono(app, {
   docs_url: "/",
   schema: {
+    openapi: "3.0.0",
     info: {
-      title: "Mi API Segura Pro",
-      version: "2.0.0",
-      description: "Ciberseguridad con Cloudflare Workers 🐔💪",
+      title: "Task Management API",
+      version: "1.0.0",
+      description: "API para gestión de tareas 🚀",
       "x-logo": {
         url: "https://aegistechmx.github.io/images/logo-aegistech-dark.png",
         altText: "AegisTechMX",
         backgroundColor: "#0a0a0a"
       },
     },
-    openapi: "3.0.0",
     tags: [
       { name: "Tasks", description: "Operaciones con tareas" },
-      { name: "Dummy", description: "Endpoint de prueba" }
+      { name: "System", description: "Endpoints del sistema" }
     ]
   },
 });
 
-// === RUTAS ===
-openapi.route("/tasks", tasksRouter);
-openapi.post("/dummy/:slug", DummyEndpoint);
+// === HEALTH CHECK ===
+openapi.get("/health", (c) => {
+  return c.json({ status: "ok", timestamp: new Date().toISOString() });
+}, {
+  responses: {
+    200: {
+      description: "Health check",
+      content: {
+        "application/json": {
+          schema: z.object({
+            status: z.string(),
+            timestamp: z.string()
+          })
+        }
+      }
+    },
+  },
+  tags: ["System"],
+});
 
-// === EXPORTAR APP CORRECTAMENTE ===
-// Exporta el router de OpenAPI en lugar de la app Hono original
+// === IMPORTAR Y REGISTRAR ENDPOINTS ===
+// Importa directamente los handlers, no las clases
+import * as taskEndpoints from "./endpoints/tasks/router";
+import * as dummyEndpoint from "./endpoints/dummyEndpoint";
+
+// Registrar endpoints usando createEndpoint
+openapi.route("/tasks", taskEndpoints.tasksRouter);
+openapi.post("/dummy/:slug", dummyEndpoint.DummyEndpoint);
+
+// === EXPORTAR ===
 export default openapi.router;
