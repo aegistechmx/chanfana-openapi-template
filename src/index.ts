@@ -61,4 +61,6 @@ openapi.route("/tasks", tasksRouter);
 openapi.post("/dummy/:slug", DummyEndpoint);
 
 // === EXPORTAR ===
-export default openapi.router;
+// INCORRECTO: export default openapi.router;
+// CORRECTO:
+export default app;
