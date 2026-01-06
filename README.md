@@ -61,6 +61,7 @@ This template includes integration tests using [Vitest](https://vitest.dev/). To
 ```bash
 npm run test
 ```
+description: "Ciberseguridad con Cloudflare Workers 🐔💪 🚀"
 
 Test files are located in the `tests/` directory, with examples demonstrating how to test your endpoints and database interactions.
 
