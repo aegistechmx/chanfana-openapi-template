@@ -1,4 +1,4 @@
-import { OpenAPIRoute, fromHono } from "chanfana";
+import { OpenAPIRoute } from "chanfana";
 import { Hono } from "hono";
 import { z } from "zod";
 
@@ -15,15 +15,21 @@ export class TaskList extends OpenAPIRoute {
     responses: {
       "200": {
         description: "Ok",
-        content: { "application/json": { schema: z.object({ tasks: z.array(TaskSchema) }) } },
+        content: { 
+          "application/json": { 
+            schema: z.object({ tasks: z.array(TaskSchema) }) 
+          } 
+        },
       },
     },
   };
+
   async handle(c: any) {
     return { tasks: [{ id: "1", title: "Task 1", completed: false }] };
   }
 }
 
-const baseHono = new Hono();
-export const tasksRouter = fromHono(baseHono);
+// IMPORTANTE: Exportamos un Hono simple. 
+// No uses fromHono aquí, ya lo usamos en el index.ts principal.
+export const tasksRouter = new Hono();
 tasksRouter.get("/", TaskList);

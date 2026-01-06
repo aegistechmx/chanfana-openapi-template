@@ -5,7 +5,7 @@ import { DummyEndpoint } from "./endpoints/dummyEndpoint";
 
 const app = new Hono();
 
-// === SEGURIDAD DE GRADO A+ ===
+// === SEGURIDAD A+ CON TU HASH ===
 app.use("*", async (c, next) => {
   await next();
   c.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
@@ -13,8 +13,6 @@ app.use("*", async (c, next) => {
   c.header("X-Content-Type-Options", "nosniff");
   c.header("Referrer-Policy", "strict-origin-when-cross-origin");
   c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
-  
-  // CSP usando TU Hash específico para evitar la pantalla en blanco
   c.header(
     "Content-Security-Policy",
     "default-src 'self'; " +
@@ -39,11 +37,11 @@ const openapi = fromHono(app, {
   },
 });
 
-// Registrar rutas
+// Registro de Rutas
 openapi.route("/tasks", tasksRouter);
 openapi.post("/dummy/:slug", DummyEndpoint);
 
-// === FIX ERROR 500: Ruta manual para el esquema ===
+// Si Chanfana falla, esta ruta manual servirá el JSON
 app.get("/openapi.json", (c) => {
   return c.json(openapi.getSchema());
 });
