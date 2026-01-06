@@ -5,21 +5,16 @@ import { DummyEndpoint } from "./endpoints/dummyEndpoint";
 
 const app = new Hono();
 
-// === MIDDLEWARE DE SEGURIDAD (OBJETIVO: GRADO A+) ===
+// === SEGURIDAD DE GRADO A+ ===
 app.use("*", async (c, next) => {
   await next();
-
   c.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
   c.header("X-Frame-Options", "SAMEORIGIN");
   c.header("X-Content-Type-Options", "nosniff");
   c.header("Referrer-Policy", "strict-origin-when-cross-origin");
   c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
-
-  /**
-   * CSP PARA A+: 
-   * He añadido el hash 'sha256-...' que Swagger suele usar para su inicialización.
-   * Esto reemplaza a 'unsafe-inline' y debería subirte al A+.
-   */
+  
+  // CSP usando TU Hash específico para evitar la pantalla en blanco
   c.header(
     "Content-Security-Policy",
     "default-src 'self'; " +
@@ -31,7 +26,7 @@ app.use("*", async (c, next) => {
   );
 });
 
-// === SETUP OPENAPI ===
+// === CONFIGURACIÓN OPENAPI ===
 const openapi = fromHono(app, {
   docs_url: "/",
   schema: {
@@ -39,19 +34,16 @@ const openapi = fromHono(app, {
     info: {
       title: "Task Management API",
       version: "1.0.0",
-      description: 
-        "![AegisTech Logo](https://aegistechmx.github.io/images/logo-aegistech-dark.png)\n\n" +
-        "API segura de alto rendimiento con certificación AegisTech 🚀",
+      description: "![Logo](https://aegistechmx.github.io/images/logo-aegistech-dark.png)\n\n API Segura AegisTech 🚀",
     },
   },
 });
 
-// Registrar Endpoints
-openapi.get("/health", (c) => c.json({ status: "ok", timestamp: new Date().toISOString() }));
+// Registrar rutas
 openapi.route("/tasks", tasksRouter);
 openapi.post("/dummy/:slug", DummyEndpoint);
 
-// Ruta para el esquema JSON
+// === FIX ERROR 500: Ruta manual para el esquema ===
 app.get("/openapi.json", (c) => {
   return c.json(openapi.getSchema());
 });
