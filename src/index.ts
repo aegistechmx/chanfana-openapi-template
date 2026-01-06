@@ -3,9 +3,10 @@ import { Hono } from "hono";
 import { tasksRouter } from "./endpoints/tasks/router";
 import { DummyEndpoint } from "./endpoints/dummyEndpoint";
 
+// 1. DECLARACIÓN ÚNICA DE APP
 const app = new Hono();
 
-// === MIDDLEWARE DE SEGURIDAD ===
+// 2. MIDDLEWARE DE SEGURIDAD
 app.use("*", async (c, next) => {
   await next();
   c.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
@@ -22,9 +23,7 @@ app.use("*", async (c, next) => {
   );
 });
 
-const app = new Hono();
-
-// === SETUP OPENAPI ===
+// 3. SETUP OPENAPI
 const openapi = fromHono(app, {
   docs_url: "/",
   schema: {
@@ -33,22 +32,26 @@ const openapi = fromHono(app, {
       title: "Task Management API",
       version: "1.0.0",
       description: "API para gestión de tareas 🚀",
+      "x-logo": {
+        url: "aegistechmx.github.io",
+        altText: "AegisTechMX",
+        backgroundColor: "#0a0a0a"
+      },
     },
   },
 });
 
-// === REGISTRO DE ENDPOINTS ===
-
-// 1. Health check directo (Registrado en openapi para que aparezca en docs)
+// 4. REGISTRO DE ENDPOINTS
+// Health check
 openapi.get("/health", (c) => {
   return c.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// 2. Dummy Endpoint (Clase)
+// Dummy Endpoint (Clase)
 openapi.post("/dummy/:slug", DummyEndpoint);
 
-// 3. Router de Tareas (Importado)
-// CORRECTO: Usamos openapi.route para que Chanfana fusione los esquemas
+// Router de Tareas
 openapi.route("/tasks", tasksRouter);
 
+// 5. EXPORTACIÓN ÚNICA
 export default app;
