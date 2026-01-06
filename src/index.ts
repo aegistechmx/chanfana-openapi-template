@@ -2,8 +2,8 @@ import { fromHono } from "chanfana";
 import { Hono } from "hono";
 import { TaskRead } from "./endpoints/tasks/taskRead";
 import { TaskCreate } from "./endpoints/tasks/taskCreate";
-import { TaskUpdate } from "./endpoints/tasks/taskUpdate";
-import { TaskDelete } from "./endpoints/tasks/taskDelete";
+// import { TaskUpdate } from "./endpoints/tasks/taskUpdate";
+// import { TaskDelete } from "./endpoints/tasks/taskDelete";
 
 const app = new Hono();
 
