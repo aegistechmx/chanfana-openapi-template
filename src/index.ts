@@ -48,3 +48,16 @@ openapi.post("/dummy/:slug", DummyEndpoint);
 
 // Export the Hono app
 export default app;
+// Middleware para agregar cabeceras de seguridad a TODAS las respuestas
+app.use("*", async (c, next) => {
+  await next();
+  
+  c.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+  c.header("X-Frame-Options", "SAMEORIGIN");
+  c.header("X-Content-Type-Options", "nosniff");
+  c.header("Referrer-Policy", "strict-origin-when-cross-origin");
+  c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  c.header("Content-Security-Policy", 
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'self'; upgrade-insecure-requests"
+  );
+});
