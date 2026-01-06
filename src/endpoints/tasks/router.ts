@@ -14,12 +14,8 @@ export class TaskList extends OpenAPIRoute {
   };
 
   async handle(c: any) {
-    // Si quieres probar si la DB funciona, usa este bloque:
-    try {
-        const { results } = await c.env.DB.prepare("SELECT * FROM tasks").all();
-        return { tasks: results };
-    } catch (e) {
-        return { tasks: [], error: "DB connection ok, but table empty or error" };
-    }
+    // Usamos el binding DB que ya configuramos en la consola
+    const { results } = await c.env.DB.prepare("SELECT * FROM tasks").all();
+    return { tasks: results };
   }
 }

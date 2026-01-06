@@ -3,10 +3,9 @@ import { Hono } from "hono";
 import { TaskList } from "./endpoints/tasks/router"; 
 import { DummyEndpoint } from "./endpoints/dummyEndpoint"; 
 
-// 1. Inicializar Hono estándar
 const app = new Hono();
 
-// 2. Configurar Seguridad Grado A+
+// --- SEGURIDAD GRADO A+ ---
 app.use("*", async (c, next) => {
   await next();
   c.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
@@ -15,7 +14,6 @@ app.use("*", async (c, next) => {
   c.header("Referrer-Policy", "strict-origin-when-cross-origin");
   c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
   
-  // CSP actualizado con connect-src para evitar errores de red en Swagger
   c.header(
     "Content-Security-Policy",
     "default-src 'self'; " +
@@ -27,7 +25,7 @@ app.use("*", async (c, next) => {
   );
 });
 
-// 3. Crear el envoltorio de OpenAPI
+// Configuración de OpenAPI
 const openapi = fromHono(app, {
   docs_url: "/",
   schema: {
@@ -40,7 +38,7 @@ const openapi = fromHono(app, {
   },
 });
 
-// 4. REGISTRO DIRECTO: Esto evita el bucle que causa el Error 500
+// REGISTRO DIRECTO - No uses .route() ni archivos intermedios de router
 openapi.get("/tasks", TaskList);
 openapi.post("/dummy/:slug", DummyEndpoint);
 
