@@ -4,33 +4,32 @@ import { tasksRouter } from "./endpoints/tasks/router";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { DummyEndpoint } from "./endpoints/dummyEndpoint";
 
-// Start a Hono app
+// === START Hono APP ===
 const app = new Hono<{ Bindings: Env }>();
 
-// === MIDDLEWARE DE SEGURIDAD – PONLO AQUÍ ARRIBA, ANTES DE LAS RUTAS ===
+// === MIDDLEWARE DE SEGURIDAD – antes de rutas ===
 app.use("*", async (c, next) => {
   await next(); // Ejecuta la ruta primero
 
-  // Cabeceras de hardening pro
+  // Cabeceras Hardening Pro
   c.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
   c.header("X-Frame-Options", "SAMEORIGIN");
   c.header("X-Content-Type-Options", "nosniff");
   c.header("Referrer-Policy", "strict-origin-when-cross-origin");
   c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
 
-  // CSP ajustada para Swagger UI (necesita 'unsafe-inline' y 'unsafe-eval' por ahora)
+  // CSP ajustada para Swagger UI + GitHub Pages para logo
   c.header(
-  "Content-Security-Policy",
-  "default-src 'self'; " +
-  "script-src 'self'; " +
-  "style-src 'self'; " +
-  "img-src 'self' data: https://aegistechmx.github.io; " +
-  "frame-ancestors 'self'; " +
-  "upgrade-insecure-requests"
-);
+    "Content-Security-Policy",
+    "default-src 'self'; " +
+    "script-src 'self'; " +
+    "style-src 'self'; " +
+    "img-src 'self' data: https://aegistechmx.github.io; " +
+    "frame-ancestors 'self'; " +
+    "upgrade-insecure-requests"
+  );
 
-
-  // Upcoming headers (nivel experto)
+  // Cabeceras nivel experto
   c.header("Cross-Origin-Embedder-Policy", "require-corp");
   c.header("Cross-Origin-Opener-Policy", "same-origin");
   c.header("Cross-Origin-Resource-Policy", "same-origin");
@@ -54,8 +53,8 @@ app.onError((err, c) => {
   );
 });
 
-// === SETUP OPENAPI ===
-  const openapi = fromHono(app, {
+// === SETUP OPENAPI con logo desde GitHub Pages ===
+const openapi = fromHono(app, {
   docs_url: "/",
   schema: {
     info: {
@@ -65,20 +64,33 @@ app.onError((err, c) => {
       "x-logo": {
         url: "https://aegistechmx.github.io/images/logo-aegistech-dark.png",
         altText: "AegisTechMX",
-      }
-
-
+        backgroundColor: "#0a0a0a"
+      },
     },
   },
 });
 
-
+// === ANIMACIÓN DE LOGO (fade-in 1 sola vez) ===
+openapi.beforeRender((html) => {
+  return html.replace(
+    /(<img[^>]+x-logo[^>]*>)/,
+    `$1
+    <style>
+      img[x-logo] {
+        opacity: 0;
+        animation: fadeIn 1s forwards;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+    </style>`
+  );
+});
 
 // === RUTAS ===
-// === openapi.route("/tasks", tasksRouter);
-// === openapi.post("/dummy/:slug", DummyEndpoint);
+// openapi.route("/tasks", tasksRouter);
+// openapi.post("/dummy/:slug", DummyEndpoint);
 
 // === EXPORT ===
 export default app;
-description: "Ciberseguridad con Cloudflare Workers 🐔💪 🚀"
-
