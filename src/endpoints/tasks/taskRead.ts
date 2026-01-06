@@ -4,11 +4,17 @@ import { z } from "zod";
 export class TaskRead extends OpenAPIRoute {
   schema = {
     tags: ["Tasks"],
-    summary: "Listar todas las tareas",
+    summary: "Listar tareas",
     responses: {
       "200": {
-        description: "Lista de tareas",
-        content: { "application/json": { schema: z.object({ tasks: z.array(z.any()) }) } },
+        description: "OK",
+        content: {
+          "application/json": {
+            schema: z.object({
+              tasks: z.array(z.any()),
+            }),
+          },
+        },
       },
     },
   };

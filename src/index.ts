@@ -1,4 +1,4 @@
-import { fromHono } from "chanfana";
+import { fromHono, OpenAPIRoute } from "chanfana";
 import { Hono } from "hono";
 import { TaskRead } from "./endpoints/tasks/taskRead";
 
@@ -15,7 +15,7 @@ const openapi = fromHono(app, {
   },
 });
 
-// SOLO ESTA RUTA ACTIVA
+// Registramos solo lo básico para probar
 openapi.get("/tasks", TaskRead);
 
 export default app;

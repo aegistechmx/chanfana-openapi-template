@@ -1,16 +1,12 @@
 {
-	"compatibility_date": "2025-10-08",
-	"main": "src/index.ts",
-	"name": "chanfana-openapi-template",
-	"upload_source_maps": true,
-	"observability": {
-		"enabled": true
-	},
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "openapi-template-db",
-			"database_id": "2f40c91e-7c52-461b-8c32-b46629173e15"
-		}
-	]
+  "name": "chanfana-openapi-template",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-01-01",
+  "d1_databases": [
+    {
+      "binding": "DB", 
+      "database_name": "NOMBRE_QUE_SALGA_EN_LIST",
+      "database_id": "EL_ID_LARGO_QUE_SALGA_EN_LIST"
+    }
+  ]
 }
