@@ -2,8 +2,8 @@ import { fromHono } from "chanfana";
 import { Hono } from "hono";
 import { TaskRead } from "./endpoints/tasks/taskRead";
 import { TaskCreate } from "./endpoints/tasks/taskCreate";
-import { TaskUpdate } from "./endpoints/tasks/taskUpdate";
-import { TaskDelete } from "./endpoints/tasks/taskDelete";
+// import { TaskUpdate } from "./endpoints/tasks/taskUpdate";
+// import { TaskDelete } from "./endpoints/tasks/taskDelete";
 
 const app = new Hono();
 
@@ -34,8 +34,8 @@ const openapi = fromHono(app, {
 // 3. RUTAS
 openapi.get("/tasks", TaskRead);
 openapi.post("/tasks", TaskCreate);
-openapi.put("/tasks/:slug", TaskUpdate);
-openapi.delete("/tasks/:slug", TaskDelete);
+// openapi.put("/tasks/:slug", TaskUpdate);
+// openapi.delete("/tasks/:slug", TaskDelete);
 
 // 4. EXPORT SIMPLE (Fundamental para Workers y Chanfana)
 export default app;
