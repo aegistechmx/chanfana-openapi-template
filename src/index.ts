@@ -1,6 +1,6 @@
 import { fromHono } from "chanfana";
 import { Hono } from "hono";
-import { tasksRouter } from "./endpoints/tasks/router";
+import { TaskList } from "./endpoints/tasks/router"; // Importa la CLASE directamente
 import { DummyEndpoint } from "./endpoints/dummyEndpoint";
 
 // 1. DECLARACIÓN ÚNICA DE APP
@@ -31,31 +31,13 @@ const openapi = fromHono(app, {
     info: {
       title: "Task Management API",
       version: "1.0.0",
-      description: "API para gestión de tareas 🚀",
-      "x-logo": {
-        url: "aegistechmx.github.io",
-        altText: "AegisTechMX",
-        backgroundColor: "#0a0a0a"
-      },
     },
   },
 });
 
-// 4. REGISTRO DE ENDPOINTS
-// Health check
-openapi.get("/health", (c) => {
-  return c.json({ status: "ok", timestamp: new Date().toISOString() });
-});
 
-// Dummy Endpoint (Clase)
+openapi.get("/tasks", TaskList); 
 openapi.post("/dummy/:slug", DummyEndpoint);
+openapi.get("/health", (c) => c.json({ status: "ok" }));
 
-// CAMBIO AQUÍ: Usamos app.route en lugar de openapi.route para evitar el error de basePath
-if (tasksRouter) {
-  app.route("/tasks", tasksRouter);
-} else {
-  console.error("tasksRouter no está definido. Revisa la exportación en su archivo.");
-}
-
-// 5. EXPORTACIÓN ÚNICA
 export default app;

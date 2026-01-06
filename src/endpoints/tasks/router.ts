@@ -1,15 +1,13 @@
-import { OpenAPIRoute, fromHono } from "chanfana";
+import { OpenAPIRoute } from "chanfana";
 import { Hono } from "hono";
 import { z } from "zod";
 
-// 1. Definir esquemas primero
 const TaskSchema = z.object({
   id: z.string(),
   title: z.string(),
   completed: z.boolean(),
 });
 
-// 2. Definir la CLASE (Debe ir antes de usarse en el router)
 export class TaskList extends OpenAPIRoute {
   schema = {
     tags: ["Tasks"],
@@ -33,11 +31,7 @@ export class TaskList extends OpenAPIRoute {
   }
 }
 
-// 3. Crear el router y registrar la clase después de definirla
-const tasks = new Hono();
-const router = fromHono(tasks);
-
-// Ahora TaskList ya está definida y no dará ReferenceError
-router.get("/", TaskList);
-
-export const tasksRouter = tasks;
+// Exportamos un Hono limpio
+export const tasksRouter = new Hono();
+// No usamos fromHono aquí para evitar el error de 'parent'
+tasksRouter.get("/", (c) => new TaskList(c.req as any, c.env).handle()); 
