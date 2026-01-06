@@ -57,12 +57,18 @@ app.onError((err, c) => {
   docs_url: "/",
   schema: {
     info: {
-      title: "Mi API Segura Pro",
+      title: "AegisTechMX Secure API",
       version: "2.0.0",
-      description: "Aprendiendo ciberseguridad con Cloudflare Workers 🐔💪",
+      description: "API segura con hardening completo y estándares enterprise",
+      "x-logo": {
+        url: "https://aegistechmx.github.io/imagess/logo.png",
+        altText: "AegisTechMX",
+        backgroundColor: "#0b0f1a"
+      }
     },
   },
 });
+
 
 // === RUTAS ===
 // === openapi.route("/tasks", tasksRouter);
