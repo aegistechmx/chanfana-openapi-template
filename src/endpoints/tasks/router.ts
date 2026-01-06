@@ -37,10 +37,10 @@ class TaskList extends OpenAPIRoute {
 
 // 3. Configurar el Router correctamente
 const baseHono = new Hono();
-export const tasksRouter = fromHono(baseHono);
 
-// IMPORTANTE: Aquí se pasa la clase TaskList sin paréntesis ()
-tasksRouter.get("/", TaskList);
+// Envolvemos internamente para registrar la ruta con metadatos
+const router = fromHono(baseHono);
+router.get("/", TaskList);
 
-// Exportar para compatibilidad
-export { TaskList };
+// EXPORTA EL ROUTER BASE (baseHono)
+export const tasksRouter = baseHono; 

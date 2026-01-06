@@ -1,20 +1,17 @@
 import { fromHono } from "chanfana";
 import { Hono } from "hono";
+import { tasksRouter } from "./endpoints/tasks/router";
+import { DummyEndpoint } from "./endpoints/dummyEndpoint";
 
-// Inicia la app Hono
 const app = new Hono();
 
 // === MIDDLEWARE DE SEGURIDAD ===
 app.use("*", async (c, next) => {
   await next();
-
-  // Cabeceras de seguridad
   c.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
   c.header("X-Frame-Options", "SAMEORIGIN");
   c.header("X-Content-Type-Options", "nosniff");
   c.header("Referrer-Policy", "strict-origin-when-cross-origin");
-  
-  // CSP para Swagger UI
   c.header(
     "Content-Security-Policy",
     "default-src 'self' https://cdn.jsdelivr.net; " +
@@ -40,27 +37,21 @@ const openapi = fromHono(app, {
         backgroundColor: "#0a0a0a"
       },
     },
-    tags: [
-      { name: "Tasks", description: "Operaciones con tareas" },
-      { name: "System", description: "Endpoints del sistema" }
-    ]
   },
 });
 
-// === HEALTH CHECK ===
+// === REGISTRO DE ENDPOINTS ===
+
+// 1. Health check directo
 openapi.get("/health", (c) => {
   return c.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// === IMPORTAR Y REGISTRAR ENDPOINTS ===
-import { tasksRouter } from "./endpoints/tasks/router";
-import { DummyEndpoint } from "./endpoints/dummyEndpoint";
-
-// Registrar endpoints
-openapi.route("/tasks", tasksRouter);
+// 2. Dummy Endpoint (Clase)
 openapi.post("/dummy/:slug", DummyEndpoint);
 
-// === EXPORTAR ===
-// INCORRECTO: export default openapi.router;
-// CORRECTO:
+// 3. Router de Tareas (Importado)
+// IMPORTANTE: Usamos app.route para integrar el router externo
+app.route("/tasks", tasksRouter);
+
 export default app;
