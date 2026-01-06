@@ -24,7 +24,7 @@ app.use("*", async (c, next) => {
   "default-src 'self'; " +
   "script-src 'self'; " +
   "style-src 'self'; " +
-  "img-src 'self' data: https://raw.githubusercontent.com; " +
+  "img-src 'self' data: https://aegistechmx.github.io; " +
   "frame-ancestors 'self'; " +
   "upgrade-insecure-requests"
 );
@@ -63,9 +63,11 @@ app.onError((err, c) => {
       version: "2.0.0",
       description: "Ciberseguridad con Cloudflare Workers 🐔💪",
       "x-logo": {
-        url: "https://raw.githubusercontent.com/aegistechmx/aegistechmx.github.io/main/images/logo-aegistech-dark.png",
+        url: "https://aegistechmx.github.io/images/logo-aegistech-dark.png",
         altText: "AegisTechMX",
       }
+
+
     },
   },
 });
