@@ -1,6 +1,7 @@
 import { OpenAPIRoute } from "chanfana";
 import { z } from "zod";
 
+// Esquema de validación
 const TaskSchema = z.object({
   id: z.string(),
   title: z.string(),
@@ -10,13 +11,15 @@ const TaskSchema = z.object({
 export class TaskList extends OpenAPIRoute {
   schema = {
     tags: ["Tasks"],
-    summary: "List all tasks",
+    summary: "Listar todas las tareas",
     responses: {
       "200": {
-        description: "List of tasks",
+        description: "Lista de tareas obtenida con éxito",
         content: {
           "application/json": {
-            schema: z.object({ tasks: z.array(TaskSchema) }),
+            schema: z.object({
+              tasks: z.array(TaskSchema),
+            }),
           },
         },
       },
@@ -24,8 +27,11 @@ export class TaskList extends OpenAPIRoute {
   };
 
   async handle() {
+    // Aquí puedes agregar lógica de D1 después
     return {
-      tasks: [{ id: "1", title: "Task 1", completed: false }],
+      tasks: [
+        { id: "1", title: "Tarea de ejemplo", completed: false },
+      ],
     };
   }
 }
