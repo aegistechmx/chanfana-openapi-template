@@ -50,8 +50,12 @@ openapi.get("/health", (c) => {
 // Dummy Endpoint (Clase)
 openapi.post("/dummy/:slug", DummyEndpoint);
 
-// Router de Tareas
-openapi.route("/tasks", tasksRouter);
+// CAMBIO AQUÍ: Usamos app.route en lugar de openapi.route para evitar el error de basePath
+if (tasksRouter) {
+  app.route("/tasks", tasksRouter);
+} else {
+  console.error("tasksRouter no está definido. Revisa la exportación en su archivo.");
+}
 
 // 5. EXPORTACIÓN ÚNICA
 export default app;
