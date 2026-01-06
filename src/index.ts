@@ -53,7 +53,7 @@ app.onError((err, c) => {
 });
 
 // === SETUP OPENAPI ===
-// === const openapi = fromHono(app, {
+  const openapi = fromHono(app, {
   docs_url: "/",
   schema: {
     info: {
