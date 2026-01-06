@@ -4,12 +4,12 @@ import { tasksRouter } from "./endpoints/tasks/router";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { DummyEndpoint } from "./endpoints/dummyEndpoint";
 
-// Start a Hono app
+// Inicia la app Hono
 const app = new Hono<{ Bindings: Env }>();
 
-// === MIDDLEWARE DE SEGURIDAD – siempre arriba ===
+// === MIDDLEWARE DE SEGURIDAD – ANTES DE LAS RUTAS ===
 app.use("*", async (c, next) => {
-  await next(); // Ejecuta la ruta primero
+  await next();
 
   // Cabeceras de hardening pro
   c.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
@@ -17,29 +17,34 @@ app.use("*", async (c, next) => {
   c.header("X-Content-Type-Options", "nosniff");
   c.header("Referrer-Policy", "strict-origin-when-cross-origin");
   c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
-  c.header("Content-Security-Policy",
+
+  // CSP básica para Swagger UI
+  c.header(
+    "Content-Security-Policy",
     "default-src 'self'; " +
     "script-src 'self'; " +
     "style-src 'self'; " +
-    "img-src 'self' data: https://aegistechmx.github.io; " +
+    "img-src 'self' data: https://raw.githubusercontent.com https://aegistechmx.github.io; " +
     "frame-ancestors 'self'; " +
     "upgrade-insecure-requests"
   );
+
+  // Cabeceras avanzadas
   c.header("Cross-Origin-Embedder-Policy", "require-corp");
   c.header("Cross-Origin-Opener-Policy", "same-origin");
   c.header("Cross-Origin-Resource-Policy", "same-origin");
 });
 
-// === MANEJADOR DE ERRORES ===
+// === MANEJADOR GLOBAL DE ERRORES ===
 app.onError((err, c) => {
   if (err instanceof ApiException) {
     return c.json({ success: false, errors: err.buildResponse() }, err.status as ContentfulStatusCode);
   }
-  console.error("Global error handler caught:", err);
+  console.error("Error global atrapado:", err);
   return c.json({ success: false, errors: [{ code: 7000, message: "Internal Server Error" }] }, 500);
 });
 
-// === SETUP OPENAPI con logo desde GitHub Pages ===
+// === SETUP OPENAPI CON LOGO DIRECTO ===
 const openapi = fromHono(app, {
   docs_url: "/",
   schema: {
@@ -50,33 +55,15 @@ const openapi = fromHono(app, {
       "x-logo": {
         url: "https://aegistechmx.github.io/images/logo-aegistech-dark.png",
         altText: "AegisTechMX",
-        backgroundColor: "#ffffff" // fondo claro para que el logo oscuro resalte
+        backgroundColor: "#0a0a0a"
       },
     },
   },
-});
-
-// === ANIMACIÓN DE LOGO (fade-in 1 sola vez) ===
-openapi.beforeRender((html) => {
-  return html.replace(
-    /(<img[^>]+x-logo[^>]*>)/,
-    `$1
-    <style>
-      img[x-logo] {
-        opacity: 0;
-        animation: fadeIn 1s forwards;
-      }
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-    </style>`
-  );
 });
 
 // === RUTAS ===
 // openapi.route("/tasks", tasksRouter);
 // openapi.post("/dummy/:slug", DummyEndpoint);
 
-// === EXPORT ===
+// === EXPORTAR APP ===
 export default app;
