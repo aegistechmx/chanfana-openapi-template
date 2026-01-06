@@ -2,15 +2,14 @@ import { OpenAPIRoute, fromHono } from "chanfana";
 import { Hono } from "hono";
 import { z } from "zod";
 
-// 1. Esquema de la tarea
 const TaskSchema = z.object({
   id: z.string(),
   title: z.string(),
   completed: z.boolean(),
 });
 
-// 2. Definir Endpoints como CLASES (Esto evita el error de constructor)
-class TaskList extends OpenAPIRoute {
+// Definición de clase limpia
+export class TaskList extends OpenAPIRoute {
   schema = {
     tags: ["Tasks"],
     summary: "List all tasks",
@@ -26,21 +25,17 @@ class TaskList extends OpenAPIRoute {
     },
   };
 
-  async handle(c: any) {
+  async handle() {
     return {
-      tasks: [
-        { id: "1", title: "Task 1", completed: false },
-      ],
+      tasks: [{ id: "1", title: "Task 1", completed: false }],
     };
   }
 }
 
-// 3. Configurar el Router correctamente
-const baseHono = new Hono();
+// Registramos los endpoints en este router local
+// No es estrictamente necesario usar fromHono aquí si el router se registra con openapi.route en el index
+// pero ayuda a mantener el tipado local.
+const tasksOpenapi = fromHono(tasks);
+tasksOpenapi.get("/", TaskList);
 
-// Envolvemos internamente para registrar la ruta con metadatos
-const router = fromHono(baseHono);
-router.get("/", TaskList);
-
-// EXPORTA EL ROUTER BASE (baseHono)
-export const tasksRouter = baseHono; 
+export const tasksRouter = tasks;
