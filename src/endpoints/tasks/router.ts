@@ -1,17 +1,18 @@
-import { CreateEndpoint } from "chanfana";
+import { CreateEndpoint, fromHono } from "chanfana";
 import { Hono } from "hono";
 import { z } from "zod";
 
-// Esquema común
+// --- Esquemas ---
 const TaskSchema = z.object({
   id: z.string(),
   title: z.string(),
   completed: z.boolean(),
 });
 
-// Task List
+// --- Endpoints ---
+
 const TaskList = CreateEndpoint({
-  method: "get" as const,
+  method: "get",
   path: "/",
   responses: {
     200: z.object({
@@ -26,15 +27,11 @@ const TaskList = CreateEndpoint({
       ],
     }, 200);
   },
-  metadata: {
-    tags: ["Tasks"],
-    summary: "List all tasks",
-  },
+  metadata: { tags: ["Tasks"], summary: "List all tasks" },
 });
 
-// Task Create
 const TaskCreate = CreateEndpoint({
-  method: "post" as const,
+  method: "post",
   path: "/",
   request: {
     body: z.object({
@@ -42,9 +39,7 @@ const TaskCreate = CreateEndpoint({
       completed: z.boolean().optional().default(false),
     }),
   },
-  responses: {
-    201: TaskSchema,
-  },
+  responses: { 201: TaskSchema },
   handler: async (c) => {
     const body = c.req.valid("json");
     return c.json({
@@ -53,111 +48,79 @@ const TaskCreate = CreateEndpoint({
       completed: body.completed || false,
     }, 201);
   },
-  metadata: {
-    tags: ["Tasks"],
-    summary: "Create a new task",
-  },
+  metadata: { tags: ["Tasks"], summary: "Create a new task" },
 });
 
-// Task Read
 const TaskRead = CreateEndpoint({
-  method: "get" as const,
+  method: "get",
   path: "/:id",
-  request: {
-    params: z.object({
-      id: z.string(),
-    }),
-  },
+  request: { params: z.object({ id: z.string() }) },
   responses: {
     200: TaskSchema,
-    404: z.object({
-      error: z.string(),
-    }),
+    404: z.object({ error: z.string() }),
   },
   handler: async (c) => {
     const params = c.req.valid("param");
     if (params.id === "1") {
-      return c.json({
-        id: params.id,
-        title: "Sample Task",
-        completed: false,
-      }, 200);
+      return c.json({ id: params.id, title: "Sample Task", completed: false }, 200);
     }
     return c.json({ error: "Task not found" }, 404);
   },
-  metadata: {
-    tags: ["Tasks"],
-    summary: "Get a task by ID",
-  },
+  metadata: { tags: ["Tasks"], summary: "Get a task by ID" },
 });
 
-// Task Update
 const TaskUpdate = CreateEndpoint({
-  method: "put" as const,
+  method: "put",
   path: "/:id",
   request: {
-    params: z.object({
-      id: z.string(),
-    }),
+    params: z.object({ id: z.string() }),
     body: z.object({
       title: z.string().optional(),
       completed: z.boolean().optional(),
     }),
   },
-  responses: {
-    200: TaskSchema,
-  },
+  responses: { 200: TaskSchema },
   handler: async (c) => {
     const params = c.req.valid("param");
     const body = c.req.valid("json");
-    
     return c.json({
       id: params.id,
       title: body.title || "Updated Task",
       completed: body.completed !== undefined ? body.completed : false,
     }, 200);
   },
-  metadata: {
-    tags: ["Tasks"],
-    summary: "Update a task",
-  },
+  metadata: { tags: ["Tasks"], summary: "Update a task" },
 });
 
-// Task Delete
 const TaskDelete = CreateEndpoint({
-  method: "delete" as const,
+  method: "delete",
   path: "/:id",
-  request: {
-    params: z.object({
-      id: z.string(),
-    }),
-  },
+  request: { params: z.object({ id: z.string() }) },
   responses: {
-    200: z.object({
-      success: z.boolean(),
-      message: z.string(),
-    }),
+    200: z.object({ success: z.boolean(), message: z.string() }),
   },
   handler: async (c) => {
     const params = c.req.valid("param");
-    return c.json({
-      success: true,
-      message: `Task ${params.id} deleted successfully`,
-    }, 200);
+    return c.json({ success: true, message: `Task ${params.id} deleted` }, 200);
   },
-  metadata: {
-    tags: ["Tasks"],
-    summary: "Delete a task",
-  },
+  metadata: { tags: ["Tasks"], summary: "Delete a task" },
 });
 
-// Crear router Hono y agregar endpoints
-export const tasksRouter = new Hono();
-tasksRouter.route("/", TaskList);
-tasksRouter.route("/", TaskCreate);
-tasksRouter.route("/:id", TaskRead);
-tasksRouter.route("/:id", TaskUpdate);
-tasksRouter.route("/:id", TaskDelete);
+// --- Configuración del Router ---
 
-// Exportar endpoints individuales
+// 1. Instanciamos Hono normal
+const baseHono = new Hono();
+
+// 2. Lo envolvemos con chanfana para que entienda las clases CreateEndpoint
+export const tasksRouter = fromHono(baseHono);
+
+// 3. Registramos los endpoints usando los métodos del router
+// IMPORTANTE: Se pasan las clases sin paréntesis (), Chanfana hará el 'new'
+tasksRouter.get("/", TaskList);
+tasksRouter.post("/", TaskCreate);
+tasksRouter.get("/:id", TaskRead);
+tasksRouter.put("/:id", TaskUpdate);
+tasksRouter.delete("/:id", TaskDelete);
+
+// Exportar endpoints individuales por si se necesitan en tests
 export { TaskList, TaskCreate, TaskRead, TaskUpdate, TaskDelete };
