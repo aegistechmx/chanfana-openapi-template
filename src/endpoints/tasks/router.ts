@@ -1,4 +1,3 @@
-// src/endpoints/tasks/router.ts
 import { OpenAPIRoute } from "chanfana";
 import { z } from "zod";
 
@@ -15,7 +14,12 @@ export class TaskList extends OpenAPIRoute {
   };
 
   async handle(c: any) {
-    // Si esto falla, el error 500 es por la base de datos
-    return { tasks: [] }; 
+    // Si quieres probar si la DB funciona, usa este bloque:
+    try {
+        const { results } = await c.env.DB.prepare("SELECT * FROM tasks").all();
+        return { tasks: results };
+    } catch (e) {
+        return { tasks: [], error: "DB connection ok, but table empty or error" };
+    }
   }
 }
