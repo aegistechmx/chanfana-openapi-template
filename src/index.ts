@@ -23,7 +23,7 @@ app.use("*", async (c, next) => {
   c.header(
     "Content-Security-Policy",
     "default-src 'self'; " +
-    "script-src 'self' https://cdn.jsdelivr.net 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='; " + 
+    "script-src 'self' https://cdn.jsdelivr.net 'sha256-k50uV4UJTsLb556/ssV/UqPtQnzt3a3VxHTxwJ0rxYo='; " + 
     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " + 
     "img-src 'self' data: https://aegistechmx.github.io https://raw.githubusercontent.com; " +
     "font-src 'self' https://cdn.jsdelivr.net; " +
