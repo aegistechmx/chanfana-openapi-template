@@ -61,15 +61,11 @@ export class TaskCreate extends OpenAPIRoute {
     try {
       const data = await this.getValidatedData<typeof this.schema>();
       const task = data.body;
-      
-      // Usamos valores por defecto para los opcionales para evitar nulos accidentales
-      const description = task.description || "";
-      const due_date = task.due_date || new Date().toISOString().split('T')[0];
 
       const { results } = await c.env.DB.prepare(
         "INSERT INTO tasks (name, slug, description, completed, due_date) VALUES (?, ?, ?, 0, ?) RETURNING *"
       )
-        .bind(task.name, task.slug, description, due_date)
+        .bind(task.name, task.slug, task.description, task.due_date)
         .run();
 
       if (!results || results.length === 0) {
@@ -84,8 +80,12 @@ export class TaskCreate extends OpenAPIRoute {
         201,
       );
     } catch (error: any) {
-      // Si la base de datos falla (ej. slug duplicado), devolvemos un error controlado
-      return c.json({ success: false, error: error.message }, 400);
+      if (error instanceof z.ZodError) {
+        return c.json({ success: false, error: error.message }, 400);
+      }
+      // Re-throw other errors to be caught by a global error handler
+      // or to be handled as a 500 Internal Server Error
+      throw error;
     }
   }
 }

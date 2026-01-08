@@ -88,6 +88,49 @@ describe("Task API Integration Tests", () => {
 			const body = await response.json();
 			expect(body.success).toBe(false);
 		});
+
+		it("should create a new task with null description and due_date", async () => {
+			const taskData = {
+				name: "Task with nulls",
+				slug: "task-with-nulls",
+			};
+			const response = await SELF.fetch(`http://local.test/tasks`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(taskData),
+			});
+	
+			const body = await response.json<{ success: boolean; result: any }>();
+	
+			expect(response.status).toBe(201);
+			expect(body.success).toBe(true);
+			expect(body.result).toEqual(
+				expect.objectContaining({
+					id: expect.any(Number),
+					name: "Task with nulls",
+					slug: "task-with-nulls",
+					description: null,
+					due_date: null,
+					completed: 0,
+				}),
+			);
+		});
+
+		it("should return a 500 error for duplicate slug", async () => {
+			const taskData = {
+				name: "Task with duplicate slug",
+				slug: "new-task-1",
+				description: "A brand new task",
+				due_date: "2025-12-31",
+			};
+			const response = await SELF.fetch(`http://local.test/tasks`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(taskData),
+			});
+		
+			expect(response.status).toBe(500);
+		});
 	});
 
 	// Tests for single task operations

@@ -45,9 +45,9 @@ app.use("*", async (c, next) => {
     "object-src 'none'; " +
     "img-src 'self' data: https://fastly.jsdelivr.net; " +
     "font-src 'self' https://cdn.jsdelivr.net; " +
-    "media-src 'self' *; " + // Permitir videos/audio de cualquier origen
-    "frame-src 'self' *; " + // Permitir iframes (necesario para YouTube/Vimeo)
-    "connect-src 'self' *; " +
+    "media-src 'self'; " + 
+    "frame-src 'self'; " + 
+    "connect-src 'self'; " +
     "frame-ancestors 'none'; " +
     "upgrade-insecure-requests;"
   );
