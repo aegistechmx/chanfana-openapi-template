@@ -26,7 +26,8 @@ export class TaskUpdate extends OpenAPIRoute {
 
   async handle(c: any) {
     // Validamos el parámetro 'slug' definido en el schema
-    const { slug } = await c.req.valid("param");
+    const data = await this.getValidatedData<typeof this.schema>();
+    const { slug } = data.params;
 
     try {
       await c.env.DB.prepare("UPDATE tasks SET completed = 1 WHERE slug = ?")

@@ -36,16 +36,17 @@ export class TaskCreate extends OpenAPIRoute {
 
   async handle(c: any) {
     try {
-      const data = await c.req.valid("json");
+      const data = await this.getValidatedData<typeof this.schema>();
+      const task = data.body;
       
       // Usamos valores por defecto para los opcionales para evitar nulos accidentales
-      const description = data.description || "";
-      const due_date = data.due_date || new Date().toISOString().split('T')[0];
+      const description = task.description || "";
+      const due_date = task.due_date || new Date().toISOString().split('T')[0];
 
       await c.env.DB.prepare(
         "INSERT INTO tasks (name, slug, description, completed, due_date) VALUES (?, ?, ?, 0, ?)"
       )
-        .bind(data.name, data.slug, description, due_date)
+        .bind(task.name, task.slug, description, due_date)
         .run();
 
       return { 
