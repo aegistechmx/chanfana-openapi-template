@@ -1,84 +1,130 @@
 {
-    "configurations": [
-        {
-            "name": "Attach to Chrome", // This configuration is for attaching to a running Chrome instance.
-            "port": 9222,
-            "request": "attach",
-            "type": "chrome",
-            "webRoot": "${workspaceFolder}"
-        },
-        
-        {
-            "name": "Attach to Edge",
-            "port": 9222,
-            "request": "attach",
-            "type": "msedge",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-   
-"name": "Python: Current File",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal",
-            "justMyCode": true
-        },
-        {         "name": "Containers: Node.js Launch",
-            "type": "docker",
-            "request": "launch",
-            "preLaunchTask": "docker-run: debug",
-            "platform": "node"
-        },
-        {
-            "type": "pwa-msedge",
-            "name": "Launch Microsoft Edge",
-            "request": "launch",
-            "runtimeArgs": [
-                "--remote-debugging-port=9222"
-            ],
-            "url": "c:\\Users\\f1_br\\.vscode\\extensions\\ms-edgedevtools.vscode-edge-devtools-2.1.10\\out\\startpage\\index.html", // Provide your project's url to finish configuring
-            "presentation": {
-                "hidden": true
-            }
-        },
-        {
-            "type": "pwa-msedge",
-            "name": "Launch Microsoft Edge in headless mode",
-            "request": "launch",
-            "runtimeArgs": [
-                "--headless",
-                "--remote-debugging-port=9222"
-            ],
-            "url": "c:\\Users\\f1_br\\.vscode\\extensions\\ms-edgedevtools.vscode-edge-devtools-2.1.10\\out\\startpage\\index.html", // Provide your project's url to finish configuring
-            "presentation": {
-                "hidden": true
-            }
-        },
-        {
-            "type": "vscode-edge-devtools.debug",
-            "name": "Open Edge DevTools",
-            "request": "attach",
-            "url": "c:\\Users\\f1_br\\.vscode\\extensions\\ms-edgedevtools.vscode-edge-devtools-2.1.10\\out\\startpage\\index.html", // Provide your project's url to finish configuring
-            "presentation": {
-                "hidden": true
-            }
-        }
-    ],
-    "compounds": [
-        {
-            "name": "Launch Edge Headless and attach DevTools",
-            "configurations": [
-                "Launch Microsoft Edge in headless mode",
-                "Open Edge DevTools"
-            ]
-        },
-        {
-            "name": "Launch Edge and attach DevTools",
-            "configurations": [
-                "Launch Microsoft Edge",
-                "Open Edge DevTools"
-            ]
-        }
-    ]
+  "configurations": [
+    {
+      "name": "Depurador de Python: Archivo actual",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal"
+    }
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run why-is-node-running",
+      "runtimeExecutable": "why-is-node-running",
+      "cwd": "${workspaceFolder}",
+      "args": []
+    },
+    {
+      "name": "Depurador de Python: Archivo actual",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Depurador de Python: Archivo actual",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Depurador de Python: Archivo actual",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal"
+    },
+
+    {
+      "name": "Attach to Chrome", // This configuration is for attaching to a running Chrome instance.
+      "port": 9222,
+      "request": "attach",
+      "type": "pwa-chrome",
+      "webRoot": "${workspaceFolder}"
+    },
+
+    {
+      "name": "Attach to Edge",
+      "port": 9222,
+      "request": "attach",
+      "type": "msedge",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Python: Current File",
+      "type": "python",
+      "type": "debugpy",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome against localhost",
+      "url": "http://localhost:8787",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Containers: Node.js Launch",
+      "type": "docker",
+      "request": "launch",
+      "preLaunchTask": "docker-run: debug",
+      "platform": "node"
+    },
+    {
+      "type": "pwa-msedge",
+      "name": "Launch project in Edge",
+      "request": "launch",
+      "runtimeArgs": ["--remote-debugging-port=9222"],
+      "url": "http://localhost:8787",
+      "presentation": {
+        "hidden": true
+      }
+    },
+    {
+      "type": "pwa-msedge",
+      "name": "Launch Microsoft Edge",
+      "request": "launch",
+      "runtimeArgs": ["--remote-debugging-port=9222", "--no-sandbox"],
+      "url": "c:\\Users\\f1_br\\.vscode\\extensions\\ms-edgedevtools.vscode-edge-devtools-2.1.10\\out\\startpage\\index.html", // Provide your project's url to finish configuring
+      "presentation": {
+        "hidden": true
+      }
+    },
+    {
+      "type": "pwa-msedge",
+      "name": "Launch Microsoft Edge in headless mode",
+      "request": "launch",
+      "runtimeArgs": ["--headless", "--remote-debugging-port=9222"],
+      "url": "c:\\Users\\f1_br\\.vscode\\extensions\\ms-edgedevtools.vscode-edge-devtools-2.1.10\\out\\startpage\\index.html", // Provide your project's url to finish configuring
+      "presentation": {
+        "hidden": true
+      }
+    },
+    {
+      "type": "vscode-edge-devtools.debug",
+      "name": "Open Edge DevTools",
+      "request": "attach",
+      "url": "c:\\Users\\f1_br\\.vscode\\extensions\\ms-edgedevtools.vscode-edge-devtools-2.1.10\\out\\startpage\\index.html", // Provide your project's url to finish configuring
+      "presentation": {
+        "hidden": true
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Launch Edge Headless and attach DevTools",
+      "configurations": [
+        "Launch Microsoft Edge in headless mode",
+        "Open Edge DevTools"
+      ]
+    },
+    {
+      "name": "Launch Edge and attach DevTools",
+      "configurations": ["Launch Microsoft Edge", "Open Edge DevTools"]
+    }
+  ]
 }
