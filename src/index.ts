@@ -56,9 +56,7 @@ const openapi = fromHono(app, {
     info: {
       title: "AegisTech API",
       version: "1.0.0",
-      description: `API de gestión de tareas con seguridad Grado A+
-<br><br>
-<video autoplay loop muted playsinline width="100%" src="/media/logo.webm"></video>`, // RUTA ACTUALIZADA
+      description: "API de gestión de tareas con seguridad Grado A+",
     },
   },
 });
