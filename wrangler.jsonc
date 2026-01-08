@@ -8,5 +8,8 @@
       "database_name": "openapi-template-db",
       "database_id": "2f40c91e-7c52-461b-8c32-b46629173e15"
     }
-  ]
+  ],
+  "site": {
+    "bucket": "./public"
+  }
 }
