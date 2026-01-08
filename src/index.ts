@@ -36,7 +36,7 @@ app.use("*", async (c, next) => {
   c.header(
     "Content-Security-Policy", 
     "default-src 'self'; " +
-    "script-src 'self' https://cdn.jsdelivr.net 'sha256-k50uV4UJTsLb556/ssV/UqPtQnzt3a3VxHTxwJ0rxYo='; " + 
+    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " + 
     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
     "img-src 'self' data: https://fastly.jsdelivr.net; " +
     "media-src 'self'; " + // Directiva añadida para permitir videos del mismo origen
