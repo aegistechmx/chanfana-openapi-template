@@ -28,7 +28,7 @@ app.use("*", async (c, next) => {
   c.header("Referrer-Policy", "no-referrer");
   
   // 5. Permissions Policy (Bloqueo de sensores y APIs del navegador)
-  c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=(), fullscreen=*, autoplay=*, interest-cohort=()");
 
   // 6. Content Security Policy (CSP)
   // Nota: 'unsafe-inline' en style-src es necesario para Swagger, 
