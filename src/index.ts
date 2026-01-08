@@ -39,6 +39,7 @@ app.use("*", async (c, next) => {
     "script-src 'self' https://cdn.jsdelivr.net; " + 
     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
     "img-src 'self' data: https://fastly.jsdelivr.net; " +
+    "media-src 'self'; " + // Directiva añadida para permitir videos del mismo origen
     "connect-src 'self' *; " +
     "frame-ancestors 'none'; " +
     "upgrade-insecure-requests;"
@@ -55,7 +56,9 @@ const openapi = fromHono(app, {
     info: {
       title: "AegisTech API",
       version: "1.0.0",
-      description: "API de gestión de tareas con seguridad Grado A+",
+      description: `API de gestión de tareas con seguridad Grado A+
+<br><br>
+<video autoplay loop muted playsinline width="100%" src="/media/logo.webm"></video>`, // RUTA ACTUALIZADA
     },
   },
 });
