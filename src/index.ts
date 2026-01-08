@@ -39,7 +39,8 @@ app.use("*", async (c, next) => {
     "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " + 
     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
     "img-src 'self' data: https://fastly.jsdelivr.net; " +
-    "media-src 'self'; " + // Directiva añadida para permitir videos del mismo origen
+    "media-src 'self' *; " + // Permitir videos/audio de cualquier origen
+    "frame-src 'self' *; " + // Permitir iframes (necesario para YouTube/Vimeo)
     "connect-src 'self' *; " +
     "frame-ancestors 'none'; " +
     "upgrade-insecure-requests;"
