@@ -35,11 +35,14 @@ app.use("*", async (c, next) => {
   // pero intentamos mantener script-src sin 'unsafe-inline' para la A+.
   c.header(
     "Content-Security-Policy", 
-    "default-src 'self'; " +
+    "default-src 'none'; " +
+    "base-uri 'self'; " +
+    "form-action 'self'; " +
     "script-src 'self' https://cdn.jsdelivr.net; " + 
     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
     "object-src 'none'; " +
     "img-src 'self' data: https://fastly.jsdelivr.net; " +
+    "font-src 'self' https://cdn.jsdelivr.net; " +
     "media-src 'self' *; " + // Permitir videos/audio de cualquier origen
     "frame-src 'self' *; " + // Permitir iframes (necesario para YouTube/Vimeo)
     "connect-src 'self' *; " +
