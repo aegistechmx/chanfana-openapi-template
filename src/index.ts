@@ -28,7 +28,7 @@ app.use("*", async (c, next) => {
   c.header("Referrer-Policy", "no-referrer");
   
   // 5. Permissions Policy (Bloqueo de sensores y APIs del navegador)
-  c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=(), interest-cohort=()");
+  c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
 
   // 6. Content Security Policy (CSP)
   // Nota: 'unsafe-inline' en style-src es necesario para Swagger, 
@@ -36,7 +36,7 @@ app.use("*", async (c, next) => {
   c.header(
     "Content-Security-Policy", 
     "default-src 'self'; " +
-    "script-src 'self' https://cdn.jsdelivr.net; " + 
+    "script-src 'self' https://cdn.jsdelivr.net 'sha256-k50uV4UJTsLb556/ssV/UqPtQnzt3a3VxHTxwJ0rxYo='; " + 
     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
     "img-src 'self' data: https://fastly.jsdelivr.net; " +
     "media-src 'self'; " + // Directiva añadida para permitir videos del mismo origen
